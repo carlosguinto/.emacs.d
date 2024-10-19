@@ -1,0 +1,16 @@
+#+title: Under Development
+
+Under Development is my Emacs config that is constantly changing based on my needs. It is not my proper Emacs config and it is not what I use on a daily basis for work.
+
+The following is a checklist of what I need for my Emacs config:
+
+- [ ] Fuzzy Search
+- [ ] LSP
+- [ ] Tree-sitter
+- [ ] Theme
+- [ ] Magit
+- [ ] Plugin Manager
+- [ ] Org Mode Plugins
+  - [ ] org-toc
+  - [ ] org-bullets
+  - [ ] org-roam
