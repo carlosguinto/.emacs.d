@@ -12,7 +12,7 @@
 (setq-default fill-column 80)
 (global-display-fill-column-indicator-mode 1)
 
-(set-face-attribute 'default nil :font "Hack-14")
+(set-face-attribute 'default nil :font "Iosevka-14")
 (setq-default line-spacing 5)
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
