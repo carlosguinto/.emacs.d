@@ -33,24 +33,31 @@
 
 ;; Packages
 (require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (package-initialize)
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
 
-(require 'use-package)
 (setq use-package-always-ensure t)
 
+;; general editing config
+
 (use-package rainbow-delimiters
-  :ensure t
-  :hook (prog-mode . rainbow-delimiters-mode))
+  :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 ;; org-mode packages
 
-(use-package org-bullets
-  :ensure t
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;; To add
+;; org toc
+;; org tempo
+;; org roam
+
+
+;; TODO
+;; C, Rust, Python, Go, ASM, JS, TS, programming config
+;; LSP, tree-sitter
+
+;; magit
+;; which-key
