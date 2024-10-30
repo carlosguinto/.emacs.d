@@ -1,7 +1,8 @@
 ;; Speed up initial startup
 (setq
- gc-cons-threshold 402653184
- gc-cons-percentage 0.6)
+ gc-cons-threshold (* 100 1024 1024)
+ gc-cons-percentage 0.6
+ read-process-output-max (* 1024 1024))
 
 (setq
  ring-bell-function 'ignore
@@ -10,7 +11,6 @@
  make-backup-files nil
  auto-save-default nil
  initial-scratch-message nil
- initial-major-mode 'eshell-mode
  recentf-max-saved-items 50
  confirm-kill-emacs 'y-or-n-p
  password-cache t
@@ -69,17 +69,97 @@
 (setq org-todo-keywords
       '((sequence "TODO" "IN PROGRESS" "|" "DONE")))
 
-;; To add
-;; org toc
-;; org tempo
-;; org roam
+;; Org Tempo
+(require 'org-tempo)
 
+;; Org Table of Contents
+(use-package toc-org
+  :commands toc-org-enable
+  :init
+  (add-hook 'org-mode-hook 'toc-org-enable))
+
+;; Org Roam
+(use-package org-roam
+  :custom
+  (org-roam-directory "~/vinci/vinci-roam-notes")
+  :bind
+  (("C-c n l" . org-roam-buffer-toggle)
+   ("C-c n f" . org-roam-node-find)
+   ("C-c n i" . org-roam-node-insert))
+  :config
+  (org-roam-setup))
+
+;; Org Roam Dependencies
+(use-package dash)
+(use-package f)
+(use-package s)
+(use-package emacsql)
+(use-package magit-section)
 
 ;; Software Development Packages
 ;; TODO
 ;; Rust, Python, Go, ASM, JS, TS, programming config
 
-;; C config
+;; Elisp
+(use-package paredit)
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (paredit-mode t)
+            (rainbow-delimiters-mode t)
+            (show-paren-mode t)))
+
+(add-hook 'lisp-interaction-mode
+          (lambda ()
+            (paredit-mode t)
+            (rainbow-delimiters-mode t)
+            (show-paren-mode t)))
+
+;; IELM setting to allow multiline input.
+;; M-RET sends the current input to IELM process.
+(require 'ielm)
+
+(defun ielm/clear-repl ()
+  "Clear current REPL buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (ielm-send-input)))
+
+(define-key inferior-emacs-lisp-mode-map
+            (kbd "M-RET")
+            #'ielm-return)
+
+(define-key inferior-emacs-lisp-mode-map
+            (kbd "C-j")
+            #'ielm-return)
+
+(define-key inferior-emacs-lisp-mode-map
+            (kbd "RET")
+            #'electric-newline-and-maybe-indent)
+
+(define-key inferior-emacs-lisp-mode-map
+            (kbd "<up>")
+            #'previous-line)
+
+(define-key inferior-emacs-lisp-mode-map
+            (kbd "<down>")
+            #'next-line)
+
+(define-key inferior-emacs-lisp-mode-map
+            (kbd "C-c C-q")
+            #'ielm/clear-repl)
+
+;; Completion
+(use-package company
+  :after lsp-mode
+  :config
+  (setq company-idle-delay 0.1
+        company-minimum-prefix-length 1))
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;; C
 (defun vinci/c-setup ()
   "C programming configuration"
   (setq-local c-default-style "linux"
@@ -94,15 +174,29 @@
 (add-hook 'c++-mode-hook 'vinci/c-setup)
 (add-hook 'c++-ts-mode-hook 'vinci/c-setup)
 
+;; Python
+(use-package lsp-python-ms
+  :after lsp
+  :init
+  (setq lsp-python-ms-auto-install-server t)
+  :hook
+  (python-ts-mode . (lambda ()
+                      (require 'lsp-python-ms)
+                      (lsp))))
 
 ;; LSP
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-enable-indentation nil)
+  (setq lsp-enable-on-type-formatting nil)
   :hook
   ((c-ts-mode . lsp)
+   (python-ts-mode .lsp)
    (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
+  :commands lsp
+  :config
+  (setq lsp-idle-delay 0.1))
 
 (use-package lsp-ui
   :commands lsp-ui-mode)
@@ -119,7 +213,8 @@
 ;; Tree-sitter config
 (setq major-mode-remap-alist
       '((c-mode . c-ts-mode)
-        (c++-mode . c++-ts-mode)))
+        (c++-mode . c++-ts-mode)
+        (python-mode . python-ts-mode)))
 
 ;; Custom function to run hooks of non-ts mode counterparts.
 (defun run-non-ts-hooks ()
@@ -136,19 +231,3 @@
 ;; Helper Packages
 (use-package which-key
   :config (which-key-mode))
-
-;; Minibuffer Packages
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(timu-caribbean-theme yasnippet which-key rainbow-delimiters org-bullets magit lsp-ui kanagawa-themes doom-themes)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
