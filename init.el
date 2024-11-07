@@ -7,7 +7,7 @@
 (setq
  ring-bell-function 'ignore
  inhibit-splash-screen t
- display-line-numbers-type t
+ display-line-numbers-type 'relative
  make-backup-files nil
  auto-save-default nil
  initial-scratch-message nil
@@ -22,6 +22,9 @@
  indent-tabs-mode nil
  cursor-in-non-selected-windows nil)
 
+(set-frame-parameter nil 'alpha-background 80)
+(add-to-list 'default-frame-alist '(alpha-background . 80))
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
@@ -34,6 +37,7 @@
 (delete-selection-mode t)
 (electric-pair-mode t)
 (global-display-fill-column-indicator-mode 1)
+(fido-vertical-mode)
 
 ;; Font setting
 (set-face-attribute 'default nil :font "Iosevka-14")
@@ -50,9 +54,9 @@
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
-;; Theme
-(use-package timu-caribbean-theme
-  :config (load-theme 'timu-caribbean t))
+(use-package gruvbox-theme
+  :config
+  (load-theme 'gruvbox-dark-hard t))
 
 ;; General Editing
 
@@ -81,7 +85,7 @@
 ;; Org Roam
 (use-package org-roam
   :custom
-  (org-roam-directory "~/vinci/vinci-roam-notes")
+  (org-roam-directory "~/vinci/roam-notes")
   :bind
   (("C-c n l" . org-roam-buffer-toggle)
    ("C-c n f" . org-roam-node-find)
