@@ -22,8 +22,8 @@
  indent-tabs-mode nil
  cursor-in-non-selected-windows nil)
 
-(set-frame-parameter nil 'alpha-background 80)
-(add-to-list 'default-frame-alist '(alpha-background . 80))
+(set-frame-parameter nil 'alpha-background 100)
+(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -92,6 +92,15 @@
    ("C-c n i" . org-roam-node-insert))
   :config
   (org-roam-setup))
+
+(use-package org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t)
+  )
 
 ;; Org Roam Dependencies
 (use-package dash)
@@ -179,13 +188,12 @@
 (add-hook 'c++-ts-mode-hook 'vinci/c-setup)
 
 ;; Python
-(use-package lsp-python-ms
-  :after lsp
-  :init
-  (setq lsp-python-ms-auto-install-server t)
+(use-package lsp-pyright
+  :custom
+  (lsp-pyright-langserver-command "pyright")
   :hook
   (python-ts-mode . (lambda ()
-                      (require 'lsp-python-ms)
+                      (require 'lsp-pyright)
                       (lsp))))
 
 ;; LSP
@@ -196,7 +204,7 @@
   (setq lsp-enable-on-type-formatting nil)
   :hook
   ((c-ts-mode . lsp)
-   (python-ts-mode .lsp)
+   (bash-ts-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :config
@@ -232,6 +240,11 @@
 ;; Magit
 (use-package magit)
 
+;; Shell/Terminal
+;; VTerm
+(use-package vterm)
+
 ;; Helper Packages
 (use-package which-key
   :config (which-key-mode))
+
