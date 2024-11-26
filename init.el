@@ -90,7 +90,7 @@
 ;; Org Roam
 (use-package org-roam
   :custom
-  (org-roam-directory "~/vinci/roam-notes")
+  (org-roam-directory "~/supervincii/roam-notes")
   :bind
   (("C-c n l" . org-roam-buffer-toggle)
    ("C-c n f" . org-roam-node-find)
@@ -258,3 +258,11 @@
 ;; Helper Packages
 (use-package which-key
   :config (which-key-mode))
+
+;; exec-path-from-shell
+(use-package exec-path-from-shell)
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+(when (daemonp)
+  (exec-path-from-shell-initiallize))
