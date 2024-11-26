@@ -40,7 +40,7 @@
 (fido-vertical-mode)
 
 ;; Font setting
-(set-face-attribute 'default nil :font "Iosevka-14")
+(set-face-attribute 'default nil :font "mononoki-14")
 
 ;; Default maximize the screen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -70,7 +70,7 @@
 
 ;; Org Config
 
-(require 'org-bullets)
+(use-package org-bullets)
 
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 (add-hook 'org-mode-hook 'org-indent-mode)
