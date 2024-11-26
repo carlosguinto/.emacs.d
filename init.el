@@ -54,9 +54,14 @@
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
-(use-package gruvbox-theme
+;; Themes
+;; (use-package gruvbox-theme
+;;   :config
+;;   (load-theme 'gruvbox-dark-hard t))
+
+(use-package timu-caribbean-theme
   :config
-  (load-theme 'gruvbox-dark-hard t))
+  (load-theme 'timu-caribbean t))
 
 ;; General Editing
 
@@ -196,6 +201,11 @@
                       (require 'lsp-pyright)
                       (lsp))))
 
+;; Dart
+(use-package dart-mode)
+(use-package lsp-dart
+  :after lsp)
+
 ;; LSP
 (use-package lsp-mode
   :init
@@ -205,6 +215,7 @@
   :hook
   ((c-ts-mode . lsp)
    (bash-ts-mode . lsp)
+   (dart-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :config
@@ -247,4 +258,3 @@
 ;; Helper Packages
 (use-package which-key
   :config (which-key-mode))
-
