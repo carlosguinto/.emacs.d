@@ -37,7 +37,6 @@
 (delete-selection-mode t)
 (electric-pair-mode t)
 (global-display-fill-column-indicator-mode 1)
-(fido-vertical-mode)
 
 ;; Font setting
 (set-face-attribute 'default nil :font "mononoki-14")
@@ -90,7 +89,7 @@
 ;; Org Roam
 (use-package org-roam
   :custom
-  (org-roam-directory "~/supervincii/roam-notes")
+  (org-roam-directory "~/personal/roam-notes")
   :bind
   (("C-c n l" . org-roam-buffer-toggle)
    ("C-c n f" . org-roam-node-find)
@@ -177,8 +176,29 @@
 
 (add-hook 'after-init-hook 'global-company-mode)
 
+(use-package vertico
+  :init
+  (vertico-mode))
+
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package marginalia
+  :bind
+  (:map minibuffer-local-map
+        ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+
 ;; C
-(defun vinci/c-setup ()
+(defun sv/c-setup ()
   "C programming configuration"
   (setq-local c-default-style "linux"
               tab-width 4
@@ -187,10 +207,10 @@
   (setq-local c-ts-mode-indent-style "linux"
               c-ts-mode-indent-offset 4))
 
-(add-hook 'c-mode-hook 'vinci/c-setup)
-(add-hook 'c-ts-mode-hook 'vinci/c-setup)
-(add-hook 'c++-mode-hook 'vinci/c-setup)
-(add-hook 'c++-ts-mode-hook 'vinci/c-setup)
+(add-hook 'c-mode-hook 'sv/c-setup)
+(add-hook 'c-ts-mode-hook 'sv/c-setup)
+(add-hook 'c++-mode-hook 'sv/c-setup)
+(add-hook 'c++-ts-mode-hook 'sv/c-setup)
 
 ;; Python
 (use-package lsp-pyright
@@ -206,6 +226,13 @@
 (use-package lsp-dart
   :after lsp)
 
+(defun sv/dart-setup ()
+  "Dart programming configuration"
+  (setq-local tab-width 2
+              indent-tabs-mode nil))
+
+(add-hook 'dart-mode-hook 'sv/dart-setup)
+
 ;; LSP
 (use-package lsp-mode
   :init
@@ -216,6 +243,7 @@
   ((c-ts-mode . lsp)
    (bash-ts-mode . lsp)
    (dart-mode . lsp)
+   (js-json-mode . lsp)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :config
@@ -234,6 +262,12 @@
 ;; Installing a tree-sitter parser
 ;; Run "M-x treesit-install-language-grammar", then follow the instructions.
 ;; Tree-sitter config
+
+(use-package yaml-mode)
+(use-package yaml-pro
+  :hook
+  (yaml-mode . yaml-pro-mode))
+
 (setq major-mode-remap-alist
       '((c-mode . c-ts-mode)
         (c++-mode . c++-ts-mode)
@@ -260,9 +294,23 @@
   :config (which-key-mode))
 
 ;; exec-path-from-shell
-(use-package exec-path-from-shell)
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell)
+;; (when (memq window-system '(mac ns x))
+;;   (exec-path-from-shell-initialize))
 
-(when (daemonp)
-  (exec-path-from-shell-initiallize))
+;; (when (daemonp)
+;;   (exec-path-from-shell-initiallize))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(delete-selection-mode nil)
+ '(package-selected-packages
+   '(yaml-pro yaml-mode yasnippet which-key vterm vertico toc-org timu-caribbean-theme rainbow-delimiters paredit org-roam-ui org-bullets orderless marginalia magit lsp-ui lsp-pyright lsp-dart exec-path-from-shell company)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
